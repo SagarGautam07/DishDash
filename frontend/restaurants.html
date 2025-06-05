@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants - DishDash</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">DishDash</a>
+        </div>
+        <button class="nav-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="restaurants.html" class="active">Restaurants</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li>
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Search and Filter Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search restaurants or cuisines...">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="filters">
+                <select id="cuisineFilter">
+                    <option value="">All Cuisines</option>
+                    <option value="American">American</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Indian">Indian</option>
+                    <option value="Chinese">Chinese</option>
+                </select>
+                <select id="ratingFilter">
+                    <option value="">All Ratings</option>
+                    <option value="4.5">4.5+ Stars</option>
+                    <option value="4.0">4.0+ Stars</option>
+                    <option value="3.5">3.5+ Stars</option>
+                </select>
+                <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Restaurant Grid -->
+    <section class="restaurant-section">
+        <div class="container">
+            <div class="restaurant-grid">
+                <!-- Restaurant cards will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DishDash</h3>
+                    <p>Your favorite food, delivered fast and fresh.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="terms.html">Terms & Conditions</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>
+                        <i class="fas fa-phone"></i> (555) 123-4567<br>
+                        <i class="fas fa-envelope"></i> support@dishdash.com
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DishDash. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Restaurant-specific JavaScript
+        function applyFilters() {
+            const cuisine = document.getElementById('cuisineFilter').value;
+            const rating = document.getElementById('ratingFilter').value;
+            const searchTerm = document.getElementById('searchInput').value;
+            
+            let filteredRestaurants = restaurants;
+            
+            if (searchTerm) {
+                filteredRestaurants = searchRestaurants(searchTerm);
+            }
+            
+            if (cuisine || rating) {
+                filteredRestaurants = filterRestaurants(cuisine, rating);
+            }
+            
+            const restaurantGrid = document.querySelector('.restaurant-grid');
+            renderRestaurants(filteredRestaurants, restaurantGrid);
+        }
+
+        function renderRestaurants(restaurants, container) {
+            container.innerHTML = restaurants.map(restaurant => `
+                <div class="restaurant-card fade-in">
+                    <img src="${restaurant.image}" alt="${restaurant.name}">
+                    <div class="restaurant-info">
+                        <h3>${restaurant.name}</h3>
+                        <div class="restaurant-meta">
+                            <span class="rating">
+                                <i class="fas fa-star"></i> ${restaurant.rating}
+                            </span>
+                            <span class="cuisine">${restaurant.cuisine}</span>
+                        </div>
+                        <p class="delivery-time">
+                            <i class="fas fa-clock"></i> ${restaurant.deliveryTime} mins
+                        </p>
+                        <a href="menu.html?id=${restaurant.id}" class="btn btn-primary">View Menu</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize restaurants
+        document.addEventListener('DOMContentLoaded', () => {
+            const restaurantGrid = document.querySelector('.restaurant-grid');
+            renderRestaurants(restaurants, restaurantGrid);
+            
+            // Add search input listener
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const searchTerm = e.target.value;
+                if (searchTerm.length >= 2) {
+                    const results = searchRestaurants(searchTerm);
+                    renderRestaurants(results, restaurantGrid);
+                } else if (searchTerm.length === 0) {
+                    renderRestaurants(restaurants, restaurantGrid);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
